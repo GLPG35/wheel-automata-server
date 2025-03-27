@@ -19,8 +19,8 @@ export const d1Query = async (type: QueryTypes, name?: string, value?: string | 
 		'deleteLi': `DROP TABLE ${name};`
 	}
 
-	for await (const queryResult of client.d1.database.query('fad19f11-5d42-4272-b0f8-c63446de90d7', {
-		account_id: 'e556f206b0fae0968bc98cd0bde19df3',
+	for await (const queryResult of client.d1.database.query(process.env.DB_ID as string, {
+		account_id: process.env.ACCOUNT_ID as string,
 		sql: queries[type]
 	})) {
 		results = type == 'create' || type == 'insert' || type == 'deleteEl' || type == 'deleteLi' ? queryResult.success : queryResult.results
