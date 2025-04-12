@@ -125,7 +125,13 @@ app.get('/ws',
 					},
 					'spinWheel': () => {
 						spinning = true
-						server.publish(topic, JSON.stringify({ type: 'spin', success: true }))
+
+						const rawWs = ws.raw as ServerWebSocket<{ id: string } | undefined>
+						const id = rawWs.data?.id
+
+						const findUser = users.find(x => x.id == id)
+
+						server.publish(topic, JSON.stringify({ type: 'spin', success: true, username: findUser?.username }))
 					},
 					'endWheel': () => {
 						const rawWs = ws.raw as ServerWebSocket<{ id: string } | undefined>
@@ -137,7 +143,7 @@ app.get('/ws',
 						wheelEnded.ended = true
 						wheelEnded.user = findUser?.username
 
-						server.publish(topic, JSON.stringify({ type: 'wheelEnded', username: findUser?.username }))
+						server.publish(topic, JSON.stringify({ type: 'wheelEnded', success: true, username: findUser?.username }))
 					},
 					'resetWheel': () => {
 						const random = Math.floor(Math.random() * 360)
